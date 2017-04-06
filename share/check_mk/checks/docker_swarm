@@ -1,0 +1,27 @@
+# the inventory function (dummy)
+def inventory_docker_swarm(info):
+  for value in info:
+    name = value[0];
+    yield name, None
+
+# the check function (dummy)
+def check_docker_swarm(item, params, info):
+  for data in info:
+    name = data[0]
+    availability = data[1]
+    reachability = data[2]
+    state = data[3]
+    role = data[4]
+    if name == item:
+      if availability == 'active' and reachability == 'reachable' and state == 'ready':
+        return 0, "Docker swarm node '{0}' is Ok, Available, Reachable, Ready, Role: {1}".format(name, role), [];
+      else:
+        return 2, "Docker container '{0}' is not Ok, Availability: '{1}' Reachability: '{2}' State: '{3}' Role: {4}".format(name, availability, reachability, state, role), [];
+
+# declare the check to Check_MK
+check_info["docker_swarm"] = {
+    'check_function':            check_docker_swarm,
+    'inventory_function':        inventory_docker_swarm,
+    'service_description':       'Docker swarm node %s',
+    'has_perfdata':              False,
+}
